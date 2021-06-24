@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/container_offline_swipeable"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<include
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		layout="@layout/placeholder_offline" />
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

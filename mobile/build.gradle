@@ -1,0 +1,90 @@
+// Main build script for WebView App
+// 
+// Usage: gradlew assembleDebug           Build debug APK
+//        gradlew assembleRelease         Build release APK
+
+final VERSION_MAJOR = 2 // max two digits
+final VERSION_MINOR = 6 // max two digits
+final VERSION_PATCH = 0 // max two digits
+final VERSION_BUILD = 0 // max three digits
+
+apply plugin: "com.onesignal.androidsdk.onesignal-gradle-plugin"
+apply plugin: "com.android.application"
+apply from: "../utils.gradle"
+
+android {
+	compileSdkVersion 29
+	buildToolsVersion "29.0.2"
+
+	defaultConfig {
+		applicationId "com.robotemplates.webviewapp"
+		minSdkVersion 19
+		targetSdkVersion 29
+		versionCode getVersionCode(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_BUILD)
+		versionName getVersionName(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
+		vectorDrawables.useSupportLibrary = true
+	}
+
+	signingConfigs {
+		release {
+			def keystoreProperties = getKeystoreProperties file("../${project.property('keystore.properties')}")
+			storeFile file("../${project.property('keystore.file')}")
+			storePassword keystoreProperties["keystore.store.password"]
+			keyAlias keystoreProperties["keystore.key.alias"]
+			keyPassword keystoreProperties["keystore.key.password"]
+		}
+	}
+
+	buildTypes {
+		debug {
+			buildConfigField "boolean", "LOGS", "true"
+			buildConfigField "boolean", "DEV_ENVIRONMENT", "true"
+			buildConfigField "boolean", "TEST_ADS", "false"
+
+			versionNameSuffix "-debug"
+		}
+
+		release {
+			buildConfigField "boolean", "LOGS", "false"
+			buildConfigField "boolean", "DEV_ENVIRONMENT", "false"
+			buildConfigField "boolean", "TEST_ADS", "false"
+
+			signingConfig signingConfigs.release
+			zipAlignEnabled true
+			minifyEnabled false
+			shrinkResources false
+			proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+		}
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
+
+	setProperty("archivesBaseName", getArtifactName(defaultConfig))
+
+	// workaround for https://issuetracker.google.com/issues/141132133
+	configurations.all {
+		resolutionStrategy {
+			force "androidx.appcompat:appcompat:1.1.0-rc01"
+		}
+	}
+}
+
+dependencies {
+	implementation fileTree(dir: "libs", include: ["*.jar"])
+	implementation(name: "config", ext: "aar")
+	implementation "androidx.appcompat:appcompat:1.1.0-rc01" // workaround for https://issuetracker.google.com/issues/141132133
+	implementation "androidx.fragment:fragment:1.1.0"
+	implementation "com.google.android.ads.consent:consent-library:1.0.7"
+	implementation "com.google.android.material:material:1.0.0"
+	implementation "com.google.firebase:firebase-ads:18.3.0"
+	implementation "com.google.firebase:firebase-analytics:17.2.1"
+	implementation "com.google.firebase:firebase-messaging:20.0.1"
+	implementation "com.onesignal:OneSignal:3.12.2"
+	implementation "org.alfonz:alfonz-utility:0.9.1"
+	implementation "org.alfonz:alfonz-view:0.9.1"
+}
+
+apply plugin: "com.google.gms.google-services"

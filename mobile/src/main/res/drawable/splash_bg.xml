@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools">
+	<item android:drawable="@color/global_bg_back" />
+	<item
+		android:width="@dimen/splash_image_size"
+		android:height="@dimen/splash_image_size"
+		android:gravity="center"
+		tools:ignore="UnusedAttribute">
+		<bitmap
+			android:gravity="center"
+			android:src="@drawable/splash" />
+	</item>
+</layer-list>
